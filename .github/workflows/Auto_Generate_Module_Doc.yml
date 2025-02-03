@@ -1,0 +1,48 @@
+name: "Autoflow - Generate Module Documentation"
+
+on:
+  pull_request:
+
+jobs:
+    tfdocs:
+        runs-on: ubuntu-latest
+    
+        steps:
+        - name: Pull request checkout
+          uses: actions/checkout@v3
+          id: checkout
+          with:
+            ref: ${{ github.event.pull_request.head.ref }}
+        
+        - name: README.md generation
+          uses: terraform-docs/gh-actions@main
+          id: tfdocs
+          with:
+            config-file: terraform-docs.yml
+            working-dir: .
+            output-file: README.md
+            output-method: inject
+            git-push: true
+        
+        - name: Output README.md
+          id: output
+          run: |
+            echo 'readme<<EOF' >> $GITHUB_ENV
+            echo "$(<README.md)" >> $GITHUB_ENV
+            echo 'EOF' >> $GITHUB_ENV
+        
+        - name: Pull request comment
+          id: comment
+          uses: actions/github-script@v6
+          with:
+            github-token: ${{ secrets.GH_TOKEN }}
+            script: |
+                const output = `Terraform-docs has updated the README.md. 
+
+                ${process.env.readme}`
+                github.rest.issues.createComment({
+                    issue_number: context.issue.number,
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    body: output
+                })
