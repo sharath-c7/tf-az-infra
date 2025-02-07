@@ -1,1 +1,59 @@
 formatter: "markdown table"
+
+version: ""
+header-from: tfdocs/header.md
+footer-from: tfdocs/footer.md
+
+sections:
+  hide: []
+  show: []
+
+content: |-
+  {{ .Header }}
+
+  Additional header info included.
+
+  {{ .Providers }}
+
+  {{ .Inputs }}
+
+  ## Examples
+
+  ```hcl
+  {{ include main.tf }}
+  ```
+  
+  {{ .Outputs }}
+
+  {{ .Footer }}
+
+output:
+  file: README.md
+  mode: replace
+  template: |- 
+    <!-- BEGIN_TF_DOCS -->
+    {{ .Content }}
+    <!-- END_TF_DOCS -->
+
+output-values:
+  enabled: false
+  from: ""
+
+sort: 
+  enabled: true
+  by: name
+
+settings:
+  anchor: true
+  color: true
+  default: true
+  description: true
+  escape: true
+  hide-empty: true
+  html: false
+  indent: 2
+  lockfile: false
+  read-comments: true
+  required: true
+  sensitive: true
+  type: true
