@@ -14,12 +14,12 @@ jobs:
         ref: ${{ github.event.pull_request.head.ref }}
 
     - name: Get list of changed files
-      uses: lots0logs/gh-action-get-changed-files@v1
+      uses: lots0logs/gh-action-get-changed-files@v2.2.2
       id: changed-files
       with:
-        format: json
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Output changed files
       run: |
         echo "Changed files:"
-        echo "${{ steps.changed-files.outputs.files }}"
+        echo "${HOME}/file.json"
